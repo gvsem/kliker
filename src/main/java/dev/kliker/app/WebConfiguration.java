@@ -10,5 +10,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     public static final String API_PREFIX = "/api/v1.0/";
 
+    public static final Long MAX_FILE_SIZE = 5_000_000L;
+
 }
 
