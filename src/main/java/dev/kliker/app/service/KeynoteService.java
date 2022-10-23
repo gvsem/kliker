@@ -1,5 +1,6 @@
 package dev.kliker.app.service;
 
+import dev.kliker.app.controller.DisplayEmitters;
 import dev.kliker.app.model.Keynote;
 import dev.kliker.app.repository.KeynoteRepository;
 import dev.kliker.app.utils.PdfUtils;
@@ -15,9 +16,12 @@ public class KeynoteService {
 
     private KeynoteRepository repository;
 
+    private DisplayEmitters emitters;
+
     @Autowired
-    KeynoteService(KeynoteRepository repository) {
+    KeynoteService(KeynoteRepository repository, DisplayEmitters emitters) {
         this.repository = repository;
+        this.emitters = emitters;
     }
 
     public Keynote addKeynote(byte[] data) throws IllegalArgumentException {
@@ -43,11 +47,15 @@ public class KeynoteService {
     }
 
     public Keynote nextSlide(Keynote k) {
-        return repository.saveAndFlush(k.nextSlide());
+        repository.saveAndFlush(k.nextSlide());
+        emitters.sendSetSlide(k.getDisplayId(), k.getCurrentSlide());
+        return k;
     }
 
     public Keynote prevSlide(Keynote k) {
-        return repository.saveAndFlush(k.prevSlide());
+        repository.saveAndFlush(k.prevSlide());
+        emitters.sendSetSlide(k.getDisplayId(), k.getCurrentSlide());
+        return k;
     }
 
 

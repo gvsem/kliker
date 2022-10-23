@@ -68,7 +68,7 @@ public class Keynote {
     @Column(name = "displayId", updatable = false, nullable = false)
     @JsonView(View.OnCreate.class)
     @JsonProperty("displayId")
-    private UUID displayId;
+    private @Getter UUID displayId;
 
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -84,7 +84,7 @@ public class Keynote {
     @Column(name = "clickerId", updatable = false, nullable = false)
     @JsonView(View.OnCreate.class)
     @JsonProperty("clickerId")
-    private UUID clickerId;
+    private @Getter UUID clickerId;
 
     public Keynote nextSlide() {
         currentSlide++;
