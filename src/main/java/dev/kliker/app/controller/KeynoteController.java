@@ -1,19 +1,15 @@
 package dev.kliker.app.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import static dev.kliker.app.WebConfiguration.API_PREFIX;
+
 @RestController
-@Tag(name = "message", description = "API to send and retrieve messages")
-public class UploadController {
+@Tag(name = "keynote", description = "API to upload keynotes")
+@RequestMapping(API_PREFIX + "keynote")
+public class KeynoteController {
+
 }

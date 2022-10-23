@@ -1,12 +1,14 @@
 package dev.kliker.app;
 
-public class WebConfigutation {
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler("some/path/*.html")
-                .addResourceLocations("/static/");
-    }
+@Configuration
+public class WebConfiguration implements WebMvcConfigurer {
+
+    public static final String API_PREFIX = "/api/v1.0/";
+
 }
 

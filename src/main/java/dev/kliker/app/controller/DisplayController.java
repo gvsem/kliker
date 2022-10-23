@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 import static dev.kliker.app.WebConfiguration.API_PREFIX;
 
 @RestController
-@Tag(name = "keynote", description = "API to upload keynotes")
-@RequestMapping(API_PREFIX + "keynote")
+@Tag(name = "display", description = "API to stream keynotes")
+@RequestMapping(API_PREFIX + "display")
 public class DisplayController {
+
+
 
 }

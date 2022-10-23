@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import static dev.kliker.app.WebConfiguration.API_PREFIX;
 
 @RestController
-@Tag(name = "keynote", description = "API to upload keynotes")
-@RequestMapping(API_PREFIX + "keynote")
+@Tag(name = "clicker", description = "Frontend API to change the slides")
+@RequestMapping(API_PREFIX + "clicker")
 public class ClickerController {
 
 }

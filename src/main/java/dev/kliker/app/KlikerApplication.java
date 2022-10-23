@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class KlikerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KlikerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(KlikerApplication.class, args);
+    }
 
 }
