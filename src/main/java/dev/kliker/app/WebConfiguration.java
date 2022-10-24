@@ -1,5 +1,6 @@
 package dev.kliker.app;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -10,7 +11,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     public static final String API_PREFIX = "/api/v1.0/";
 
-    public static final Long MAX_FILE_SIZE = 5_000_000L;
+    public static final Long MAX_FILE_SIZE = 20_000_000L;
 
 }
 
