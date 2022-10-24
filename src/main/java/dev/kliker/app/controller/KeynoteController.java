@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,7 +60,8 @@ public class KeynoteController {
 
         Keynote k = null;
         try {
-            k = keynoteService.addKeynote(file.getBytes());
+            int count = PDDocument.load(file.getBytes()).getNumberOfPages();
+            k = keynoteService.addKeynote(file.getBytes(), count);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(UNSUPPORTED_MEDIA_TYPE).body(null);
         } catch (IOException e) {

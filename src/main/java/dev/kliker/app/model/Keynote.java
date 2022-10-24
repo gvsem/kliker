@@ -43,6 +43,11 @@ public class Keynote {
     @JsonProperty("currentSlide")
     Integer currentSlide = 0;
 
+    private @Getter @Setter
+    @JsonView(View.Public.class)
+    @JsonProperty("pagesCount")
+    Integer pagesCount = 0;
+
     @Column(name = "displayId", updatable = false, nullable = false, columnDefinition = "uuid")
     @JsonView(View.OnCreate.class)
     @JsonProperty("displayId")
@@ -54,7 +59,7 @@ public class Keynote {
     private @Getter UUID clickerId = UUID.randomUUID();
 
     public Keynote nextSlide() {
-        currentSlide++;
+        currentSlide = Math.min(pagesCount - 1, currentSlide + 1);
         return this;
     }
 

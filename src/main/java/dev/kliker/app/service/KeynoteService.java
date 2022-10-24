@@ -24,12 +24,13 @@ public class KeynoteService {
         this.emitters = emitters;
     }
 
-    public Keynote addKeynote(byte[] data) throws IllegalArgumentException {
+    public Keynote addKeynote(byte[] data, int pages) throws IllegalArgumentException {
         if (!PdfUtils.hasSupportedPdfHeader(data)) {
             //throw new IllegalArgumentException("Not a supported pdf document.");
         }
         Keynote k = new Keynote();
         k.setFile(data);
+        k.setPagesCount(pages);
         repository.saveAndFlush(k);
         return k;
     }
