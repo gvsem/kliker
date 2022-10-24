@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.slides-container {
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clicker-container {
+    padding: 5px;
+    display: flex;
+    flex-flow: column;
+    gap: 5px;
+}
+
+.clicker-button {
+    flex: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    background-color: #F44336CC;
+    cursor: pointer;
+}
+
+.clicker-arrow {
+    width: 70px;
+}
+
+.clicker-button-next .clicker-arrow {
+    transform: rotate(180deg);
+}
