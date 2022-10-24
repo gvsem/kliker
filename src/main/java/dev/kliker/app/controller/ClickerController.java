@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,7 @@ public class ClickerController {
             @ApiResponse(responseCode = "404", description = "Keynote has not been found by clickerId"),
     })
     @GetMapping(path = "{clickerId}/next_slide")
-    ResponseEntity<KeynoteMetaDto> nextSlide(@PathParam("clickerId") UUID clickerId) {
+    ResponseEntity<KeynoteMetaDto> nextSlide(@PathVariable UUID clickerId) {
         var k = keynoteService.getKeynoteByDisplayId(clickerId);
         if (k.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); }
         return ResponseEntity.ok(KeynoteMetaDto.fromKeynote(keynoteService.nextSlide(k.get())));
@@ -54,7 +55,7 @@ public class ClickerController {
             @ApiResponse(responseCode = "404", description = "Keynote has not been found by clickerId"),
     })
     @GetMapping(path = "{clickerId}/prev_slide")
-    ResponseEntity<KeynoteMetaDto> prevSlide(@PathParam("clickerId") UUID clickerId) {
+    ResponseEntity<KeynoteMetaDto> prevSlide(@PathVariable UUID clickerId) {
         var k = keynoteService.getKeynoteByDisplayId(clickerId);
         if (k.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); }
         return ResponseEntity.ok(KeynoteMetaDto.fromKeynote(keynoteService.prevSlide(k.get())));

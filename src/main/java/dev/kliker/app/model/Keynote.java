@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Keynote {
 
     @Id
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = false, columnDefinition = "uuid")
     @JsonView(View.OnCreate.class)
     @JsonProperty("id")
     private @Getter
@@ -43,12 +43,12 @@ public class Keynote {
     @JsonProperty("currentSlide")
     Integer currentSlide = 0;
 
-    @Column(name = "displayId", updatable = false, nullable = false)
+    @Column(name = "displayId", updatable = false, nullable = false, columnDefinition = "uuid")
     @JsonView(View.OnCreate.class)
     @JsonProperty("displayId")
     private @Getter UUID displayId = UUID.randomUUID();
 
-    @Column(name = "clickerId", updatable = false, nullable = false)
+    @Column(name = "clickerId", updatable = false, nullable = false, columnDefinition = "uuid")
     @JsonView(View.OnCreate.class)
     @JsonProperty("clickerId")
     private @Getter UUID clickerId = UUID.randomUUID();

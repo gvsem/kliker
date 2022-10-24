@@ -39,11 +39,18 @@ public class KeynoteService {
     }
 
     public Optional<Keynote> getKeynoteByClickerId(UUID id) {
-        return repository.findByClickerId(id);
+        return repository.findOneByClickerId(id);
     }
 
     public Optional<Keynote> getKeynoteByDisplayId(UUID id) {
-        return repository.findByDisplayId(id);
+//        var a = repository.findAll();
+//        for ( var t : a) {
+//            System.out.println(t.getDisplayId());
+//            if (id.equals(t.getDisplayId())) {
+//                System.out.println("lol");
+//            }
+//        }
+        return repository.findOneByDisplayId(id);
     }
 
     public Keynote nextSlide(Keynote k) {

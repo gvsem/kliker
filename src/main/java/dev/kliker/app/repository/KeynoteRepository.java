@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface KeynoteRepository extends JpaRepository<Keynote, UUID> {
 
-    Optional<Keynote> findByClickerId(UUID uuid);
+    Optional<Keynote> findOneByClickerId(UUID uuid);
 
-    Optional<Keynote> findByDisplayId(UUID uuid);
+    Optional<Keynote> findOneByDisplayId(UUID uuid);
 }

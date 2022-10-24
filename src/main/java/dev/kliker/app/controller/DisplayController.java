@@ -71,7 +71,7 @@ public class DisplayController {
     }
 
     @GetMapping(path = "{displayId}/events", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
-    ResponseEntity<SseEmitter> createConnection(@PathParam("displayId") UUID displayId) {
+    ResponseEntity<SseEmitter> createConnection(@PathVariable UUID displayId) {
         var k = keynoteService.getKeynoteByDisplayId(displayId);
         if (k.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
