@@ -76,7 +76,7 @@ public class DisplayController {
         if (k.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        var emitter = new SseEmitter();
+        var emitter = new SseEmitter(-1L);
         emitters.add(emitter, displayId);
         return ResponseEntity.status(HttpStatus.OK).body(emitter);
     }
