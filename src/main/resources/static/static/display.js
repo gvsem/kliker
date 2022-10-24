@@ -43,7 +43,6 @@ function loadFile() {
 function subscribe() {
     const sse = new EventSource(eventsUrl);
     sse.addEventListener("message", handleMessage);
-    sse.addEventListener("error", function() { alert("SSE connection failed") });
 }
 
 function trySetPage(num) {
