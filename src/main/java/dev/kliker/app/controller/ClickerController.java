@@ -40,7 +40,7 @@ public class ClickerController {
     })
     @PostMapping(path = "{clickerId}/next_slide")
     ResponseEntity<KeynoteMetaDto> nextSlide(@PathVariable UUID clickerId) {
-        var k = keynoteService.getKeynoteByDisplayId(clickerId);
+        var k = keynoteService.getKeynoteByClickerId(clickerId);
         if (k.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); }
         return ResponseEntity.ok(KeynoteMetaDto.fromKeynote(keynoteService.nextSlide(k.get())));
     }
@@ -53,7 +53,7 @@ public class ClickerController {
     })
     @PostMapping(path = "{clickerId}/prev_slide")
     ResponseEntity<KeynoteMetaDto> prevSlide(@PathVariable UUID clickerId) {
-        var k = keynoteService.getKeynoteByDisplayId(clickerId);
+        var k = keynoteService.getKeynoteByClickerId(clickerId);
         if (k.isEmpty()) { return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); }
         return ResponseEntity.ok(KeynoteMetaDto.fromKeynote(keynoteService.prevSlide(k.get())));
     }
