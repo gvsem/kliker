@@ -19,7 +19,7 @@ subscribe();
 function loadMeta() {
     const xhr = new XMLHttpRequest();
     xhr.addEventListener("readystatechange", function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status < 400) {
             const resp = JSON.parse(xhr.responseText);
             const num = resp.currentSlideIndex + 1;
             if (pdf === null) {

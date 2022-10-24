@@ -23,7 +23,7 @@ function uploadFileInputChange(e) {
 function uploadRequestReadyStateChange(e) {
     const xhr = e.target;
 
-    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status < 400) {
         const resp = JSON.parse(xhr.responseText);
         const displayUrl = window.location.href + "display/" + resp.displayId;
         const clickerUrl = window.location.href + "clicker/" + resp.clickerId;
