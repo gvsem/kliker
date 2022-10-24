@@ -19,22 +19,11 @@ import java.util.UUID;
 public class Keynote {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator",
-            parameters = {
-                    @Parameter(
-                            name = "uuid_gen_strategy_class",
-                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-                    )
-            }
-    )
     @Column(name = "id", updatable = false, nullable = false)
     @JsonView(View.OnCreate.class)
     @JsonProperty("id")
     private @Getter
-    UUID id;
+    UUID id = UUID.randomUUID();
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
@@ -54,37 +43,15 @@ public class Keynote {
     @JsonProperty("currentSlide")
     Integer currentSlide = 0;
 
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator",
-            parameters = {
-                    @Parameter(
-                            name = "uuid_gen_strategy_class",
-                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-                    )
-            }
-    )
     @Column(name = "displayId", updatable = false, nullable = false)
     @JsonView(View.OnCreate.class)
     @JsonProperty("displayId")
-    private @Getter UUID displayId;
+    private @Getter UUID displayId = UUID.randomUUID();
 
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator",
-            parameters = {
-                    @Parameter(
-                            name = "uuid_gen_strategy_class",
-                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-                    )
-            }
-    )
     @Column(name = "clickerId", updatable = false, nullable = false)
     @JsonView(View.OnCreate.class)
     @JsonProperty("clickerId")
-    private @Getter UUID clickerId;
+    private @Getter UUID clickerId = UUID.randomUUID();
 
     public Keynote nextSlide() {
         currentSlide++;
