@@ -47,7 +47,7 @@ public class DisplayController {
             @ApiResponse(responseCode = "404", description = "Keynote has not been found by displayId"),
     })
     @GetMapping(path = "{displayId}/meta", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<KeynoteMetaDto> getMeta(@PathParam("displayId") UUID displayId) {
+    ResponseEntity<KeynoteMetaDto> getMeta(@PathVariable UUID displayId) {
         var k = keynoteService.getKeynoteByDisplayId(displayId);
         if (k.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
