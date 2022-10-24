@@ -26,7 +26,7 @@ public class KeynoteService {
 
     public Keynote addKeynote(byte[] data) throws IllegalArgumentException {
         if (!PdfUtils.hasSupportedPdfHeader(data)) {
-            throw new IllegalArgumentException("Not a supported pdf document.");
+            //throw new IllegalArgumentException("Not a supported pdf document.");
         }
         Keynote k = new Keynote();
         k.setFile(data);

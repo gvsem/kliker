@@ -60,8 +60,10 @@ public class KeynoteController {
         Keynote k = null;
         try {
             k = keynoteService.addKeynote(file.getBytes());
-        } catch (IOException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(UNSUPPORTED_MEDIA_TYPE).body(null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         if (k != null) {

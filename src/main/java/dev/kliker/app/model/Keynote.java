@@ -36,7 +36,7 @@ public class Keynote {
     private @Getter
     @JsonView(View.Public.class)
     @JsonProperty("createdAt")
-    Date createdAt;
+    Date createdAt = new Date();
 
     private @Getter
     @JsonView(View.Public.class)

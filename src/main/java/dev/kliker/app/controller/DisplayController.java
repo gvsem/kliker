@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -25,7 +26,7 @@ import java.util.concurrent.Executors;
 
 import static dev.kliker.app.WebConfiguration.API_PREFIX;
 
-@RestController
+@RestController(API_PREFIX + "display")
 @Tag(name = "display", description = "API to stream keynotes")
 @RequestMapping(API_PREFIX + "display")
 public class DisplayController {
@@ -61,7 +62,7 @@ public class DisplayController {
             @ApiResponse(responseCode = "404", description = "Keynote has not been found by displayId"),
     })
     @GetMapping(path = "{displayId}/file", produces = MediaType.APPLICATION_PDF_VALUE)
-    ResponseEntity<byte[]> getFile(@PathParam("displayId") UUID displayId) {
+    ResponseEntity<byte[]> getFile(@PathVariable UUID displayId) {
         var k = keynoteService.getKeynoteByDisplayId(displayId);
         if (k.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
