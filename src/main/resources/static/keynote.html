@@ -4,17 +4,25 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Kliker</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="../static/keynote.js" defer></script>
+        <link rel="stylesheet" href="../static/style.css">
     </head>
-    <body>
+    <body class="keynote-page">
         <form method="post" enctype="multipart/form-data" class="upload-form">
             <input type="file" name="file" class="upload-file-input">
         </form>
-        <div>
-            <a class="display-link"></a>
-        </div>
-        <div>
-            <a class="clicker-link"></a>
+        <div class="keynote-settings hidden">
+            <div class="keynote-display-settings">
+                <h2>Display</h2>
+                <a class="display-link"></a>
+                <div class="display-qr"></div>
+            </div>
+            <div class="keynote-clicker-settings">
+                <h2>Clicker</h2>
+                <a class="clicker-link"></a>
+                <div class="clicker-qr"></div>
+            </div>
         </div>
     </body>
 </html>

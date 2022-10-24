@@ -4,6 +4,9 @@
 
 html, body {
     margin: 0;
+}
+
+.full-dimensions {
     width: 100%;
     height: 100%;
 }
@@ -38,4 +41,29 @@ html, body {
 
 .clicker-button-next .clicker-arrow {
     transform: rotate(180deg);
+}
+
+.keynote-page {
+    padding: 5px;
+}
+
+.upload-form {
+    text-align: center;
+}
+
+.keynote-settings {
+    display: flex;
+}
+
+.keynote-settings > * {
+    flex: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+}
+
+.hidden {
+    display: none;
 }
