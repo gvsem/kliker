@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.apache.commons.io.FilenameUtils;
 
 import static dev.kliker.app.WebConfiguration.API_PREFIX;
 import static dev.kliker.app.WebConfiguration.MAX_FILE_SIZE;
@@ -60,6 +61,13 @@ public class KeynoteController {
 
         Keynote k = null;
         try {
+            if (
+                !FilenameUtils.getExtension(file.getOriginalFilename()).equals("pdf")
+            ) {
+                System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
+                throw new IllegalArgumentException("Not a supported pdf document.");
+            }
+
             int count = PDDocument.load(file.getBytes()).getNumberOfPages();
             k = keynoteService.addKeynote(file.getBytes(), count);
         } catch (IllegalArgumentException e) {
