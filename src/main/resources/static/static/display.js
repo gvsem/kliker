@@ -1,5 +1,5 @@
-const container = document.querySelector(".slides-container");
-const canvas = container.querySelector("canvas");
+const slidesContainer = document.querySelector(".slides-container");
+const canvas = slidesContainer.querySelector("canvas");
 const displayApiBaseUrl = "../api" + window.location.pathname;
 const fileUrl = displayApiBaseUrl + "/file";
 const metaUrl = displayApiBaseUrl + "/meta";
@@ -11,16 +11,51 @@ const error_messages = {
 };
 const unknown_error = "Unknown error occurred. Please try again or contact the developers";
 
-window.addEventListener("resize", updateDisplay);
-document.querySelector("body").addEventListener("keydown", keydown);
+window.addEventListener("resize", handleResize);
+document.querySelector("body").addEventListener("keydown", handleKeydown);
 
 let pdf = null;
 let futurePageNum = null;
 let pageNum = null;
 
+let renderedSlidesCache = {};
+let renderedSlidesCacheWidth = slidesContainer.clientWidth;
+let renderedSlidesCacheHeight = slidesContainer.clientHeight;
+let renderingTasksStack = [];
+
 loadMeta();
 loadFile();
 subscribe();
+renderer();
+
+function renderer() {
+    if (!renderingTasksStack.length) {
+        setTimeout(renderer, 200);
+        return;
+    }
+
+    const task = renderingTasksStack.pop();
+    if (
+        task.width !== slidesContainer.clientWidth
+        || task.height !== slidesContainer.clientHeight
+    ) {
+        setTimeout(renderer, 0);
+        return;
+    }
+
+    renderPageNum(task.num, task.canvas, function() {
+        setTimeout(renderer, 0);
+    });
+}
+
+function makeRenderingTask(num) {
+    return {
+        num: num,
+        canvas: document.createElement("canvas"),
+        width: slidesContainer.clientWidth,
+        height: slidesContainer.clientHeight,
+    };
+}
 
 function loadMeta() {
     const xhr = new XMLHttpRequest();
@@ -47,6 +82,7 @@ function loadMeta() {
 function loadFile() {
     pdfjsLib.getDocument(fileUrl).promise.then(function(loadedPdf) {
         pdf = loadedPdf;
+        preRenderAllPages();
         trySetPage(futurePageNum !== null ? futurePageNum : 1);
     });
 }
@@ -71,17 +107,46 @@ function updateDisplay() {
     if (pdf === null) {
         return;
     }
+    const slide = getPageCanvas(pageNum);
+    slidesContainer.removeChild(slidesContainer.lastChild);
+    slidesContainer.appendChild(slide);
+}
+
+function preRenderAllPages() {
+    if (pdf === null) {
+        return;
+    }
+    for (let i = pdf.numPages; i > 0; i--) {
+        getPageCanvas(i);
+    }
+}
+
+function getPageCanvas(num) {
+    ensureRenderedSlidesCacheValid();
+    const cached = renderedSlidesCache[num];
+    if (cached !== undefined) {
+        return cached;
+    }
+
+    const task = makeRenderingTask(num);
+    renderingTasksStack.push(task);
+    renderedSlidesCache[num] = task.canvas;
+
+    return task.canvas;
+}
+
+function renderPageNum(num, canvas, renderedCallback) {
     pdf
-        .getPage(pageNum)
+        .getPage(num)
         .then(function(page) {
-            display(page, canvas, container);
+            renderPage(page, canvas, renderedCallback);
         });
 }
 
-function display(page, canvas, container) {
+function renderPage(page, canvas, renderedCallback) {
     const initialViewport = page.getViewport({ scale: 1, });
-    const widthRatio = container.clientWidth / initialViewport.width;
-    const heightRatio = container.clientHeight / initialViewport.height;
+    const widthRatio = slidesContainer.clientWidth / initialViewport.width;
+    const heightRatio = slidesContainer.clientHeight / initialViewport.height;
     const scale = Math.min(widthRatio, heightRatio);
     const scaledViewport = page.getViewport({ scale: scale });
 
@@ -97,7 +162,20 @@ function display(page, canvas, container) {
         canvasContext: canvas.getContext("2d"),
         viewport: scaledViewport,
     };
-    page.render(renderContext);
+    page.render(renderContext).promise.then(renderedCallback);
+}
+
+function ensureRenderedSlidesCacheValid() {
+    if (
+        renderedSlidesCacheWidth === slidesContainer.clientWidth
+        && renderedSlidesCacheHeight === slidesContainer.clientHeight
+    ) {
+        return;
+    }
+
+    renderedSlidesCache = {};
+    renderedSlidesCacheWidth = slidesContainer.clientWidth;
+    renderedSlidesCacheHeight = slidesContainer.clientHeight;
 }
 
 function handleMessage(e) {
@@ -109,10 +187,15 @@ function handleMessage(e) {
     }
 }
 
-function keydown(e) {
+function handleKeydown(e) {
     if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
         trySetPage(pageNum + 1);
     } else if (e.key === "ArrowLeft") {
         trySetPage(pageNum - 1);
     }
+}
+
+function handleResize() {
+    preRenderAllPages();
+    updateDisplay();
 }
