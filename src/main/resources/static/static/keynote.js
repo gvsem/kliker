@@ -12,6 +12,13 @@ const qrOptions = {
     height: 250,
 };
 
+const error_messages = {
+    413: "Upload failed, this file is too large",
+    415: "Upload failed, looks like this file is not a proper PDF",
+    0: "Upload failed, please check your network connectivity and try again",
+};
+const unknown_error = "Unknown error occurred. Please try again or contact the developers";
+
 uploadFileInput.addEventListener("change", uploadFileInputChange);
 
 function uploadFileInputChange(e) {
@@ -43,8 +50,8 @@ function uploadRequestReadyStateChange(e) {
     const xhr = e.target;
 
     if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status >= 400) {
-            alert("Cannot upload this file. Is it a properly formatted PDF?");
+        if (xhr.status !== 201) {
+            alert(error_messages[xhr.status] || unknown_error);
             return;
         }
         const resp = JSON.parse(xhr.responseText);

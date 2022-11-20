@@ -5,6 +5,12 @@ const fileUrl = displayApiBaseUrl + "/file";
 const metaUrl = displayApiBaseUrl + "/meta";
 const eventsUrl = displayApiBaseUrl + "/events";
 
+const error_messages = {
+    404: "This display does not exist",
+    0: "Request failed, please check your network connectivity and try again",
+};
+const unknown_error = "Unknown error occurred. Please try again or contact the developers";
+
 window.addEventListener("resize", updateDisplay);
 document.querySelector("body").addEventListener("keydown", keydown);
 
@@ -19,14 +25,19 @@ subscribe();
 function loadMeta() {
     const xhr = new XMLHttpRequest();
     xhr.addEventListener("readystatechange", function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status < 400) {
-            const resp = JSON.parse(xhr.responseText);
-            const num = resp.currentSlideIndex + 1;
-            if (pdf === null) {
-                futurePageNum = num;
-            } else {
-                trySetPage(num);
-            }
+        if (xhr.readyState !== XMLHttpRequest.DONE) {
+            return;
+        }
+        if (xhr.status !== 200) {
+            alert(error_messages[xhr.status] || unknown_error);
+        }
+
+        const resp = JSON.parse(xhr.responseText);
+        const num = resp.currentSlideIndex + 1;
+        if (pdf === null) {
+            futurePageNum = num;
+        } else {
+            trySetPage(num);
         }
     });
     xhr.open("GET", metaUrl);
