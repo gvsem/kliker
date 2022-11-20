@@ -37,7 +37,11 @@ class DisplayEmitters {
 
     private void send(Object obj, UUID displayId) {
         List<SseEmitter> failedEmitters = new ArrayList<>();
-        this.emitters.get(displayId).forEach(emitter -> {
+        var es = this.emitters.get(displayId);
+        if (es == null) {
+            return;
+        }
+        es.forEach(emitter -> {
             cachedThreadPool.execute(() -> {
                 try {
                     emitter.send(obj);
