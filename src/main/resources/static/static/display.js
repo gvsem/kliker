@@ -1,5 +1,5 @@
-const container = document.querySelector(".slides-container");
-const canvas = container.querySelector("canvas");
+const slidesContainer = document.querySelector(".slides-container");
+const canvas = slidesContainer.querySelector("canvas");
 const displayApiBaseUrl = "../api" + window.location.pathname;
 const fileUrl = displayApiBaseUrl + "/file";
 const metaUrl = displayApiBaseUrl + "/meta";
@@ -17,6 +17,9 @@ document.querySelector("body").addEventListener("keydown", keydown);
 let pdf = null;
 let futurePageNum = null;
 let pageNum = null;
+let renderedSlidesCache = {};
+let renderedSlidesCacheWidth = slidesContainer.clientWidth;
+let renderedSlidesCacheHeight = slidesContainer.clientHeight;
 
 loadMeta();
 loadFile();
@@ -71,14 +74,31 @@ function updateDisplay() {
     if (pdf === null) {
         return;
     }
-    pdf
-        .getPage(pageNum)
-        .then(function(page) {
-            display(page, canvas, container);
-        });
+    const slide = getRenderedPage(pageNum);
+    slidesContainer.removeChild(slidesContainer.lastChild);
+    slidesContainer.appendChild(slide);
 }
 
-function display(page, canvas, container) {
+function getRenderedPage(num) {
+    ensureRenderedSlidesCacheValid();
+    const cached = renderedSlidesCache[num];
+    if (cached !== undefined) {
+        return cached;
+    }
+
+    const canvas = document.createElement("canvas");
+    renderedSlidesCache[num] = canvas;
+
+    pdf
+        .getPage(num)
+        .then(function(page) {
+            renderPage(page, canvas, slidesContainer);
+        });
+
+    return canvas;
+}
+
+function renderPage(page, canvas, container) {
     const initialViewport = page.getViewport({ scale: 1, });
     const widthRatio = container.clientWidth / initialViewport.width;
     const heightRatio = container.clientHeight / initialViewport.height;
@@ -98,6 +118,19 @@ function display(page, canvas, container) {
         viewport: scaledViewport,
     };
     page.render(renderContext);
+}
+
+function ensureRenderedSlidesCacheValid() {
+    if (
+        renderedSlidesCacheWidth === slidesContainer.clientWidth
+        && renderedSlidesCacheHeight === slidesContainer.clientHeight
+    ) {
+        return;
+    }
+
+    renderedSlidesCache = {};
+    renderedSlidesCacheWidth = slidesContainer.clientWidth;
+    renderedSlidesCacheHeight = slidesContainer.clientHeight;
 }
 
 function handleMessage(e) {
