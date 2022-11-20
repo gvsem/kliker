@@ -9,22 +9,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import static dev.kliker.app.WebConfiguration.API_PREFIX;
 import static dev.kliker.app.WebConfiguration.MAX_FILE_SIZE;
@@ -33,13 +26,24 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @Tag(name = "keynote", description = "API to upload keynotes")
 @RequestMapping(API_PREFIX + "keynote")
+@ControllerAdvice
 public class KeynoteController {
 
     private KeynoteService keynoteService;
 
     @Autowired
-    public KeynoteController(KeynoteService keynoteService){
+    public KeynoteController(KeynoteService keynoteService) {
         this.keynoteService = keynoteService;
+    }
+
+    @ExceptionHandler(SizeLimitExceededException.class)
+    @ResponseStatus(PAYLOAD_TOO_LARGE)
+    public ResponseEntity<String> handleSizeLimit(
+            Exception exception
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(null);
     }
 
     @JsonView(View.OnCreate.class)
@@ -49,10 +53,10 @@ public class KeynoteController {
             @ApiResponse(responseCode = "413", description = "File is too large"),
             @ApiResponse(responseCode = "415", description = "File is malformed"),
     })
-    @PostMapping(value = "upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE} )
+    @PostMapping(value = "upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Keynote> upload(@Parameter(description = "PDF file", required = true,
             content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE))
-                                            @RequestParam("file") MultipartFile file) {
+                                          @RequestParam("file") MultipartFile file) {
 
         if (file.getSize() > MAX_FILE_SIZE) {
             return ResponseEntity.status(PAYLOAD_TOO_LARGE).body(null);
@@ -62,10 +66,8 @@ public class KeynoteController {
         try {
             int count = PDDocument.load(file.getBytes()).getNumberOfPages();
             k = keynoteService.addKeynote(file.getBytes(), count);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(UNSUPPORTED_MEDIA_TYPE).body(null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
         if (k != null) {
