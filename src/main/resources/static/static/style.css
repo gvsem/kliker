@@ -2,6 +2,16 @@
     box-sizing: border-box;
 }
 
+:root {
+    --link-color: #3B8B97;
+    --background-color: #FEDDDA;
+    --lightest-color: #FBACA5;
+    --lighter-color: #FB8F86;
+    --main-color: #F6695E;
+    --darker-color: #B96963;
+    --darkest-color: #A0281F;
+}
+
 html, body {
     margin: 0;
 }
@@ -19,10 +29,17 @@ html, body {
 }
 
 .clicker-container {
+    background-color: var(--background-color);
     padding: 5px;
     display: flex;
-    flex-flow: column;
     gap: 5px;
+    flex-direction: column;
+}
+
+@media (orientation: landscape) {
+    .clicker-container {
+        flex-direction: row;
+    }
 }
 
 .clicker-button {
@@ -31,8 +48,14 @@ html, body {
     align-items: center;
     justify-content: center;
     border: 1px solid black;
-    background-color: #F44336CC;
+    border-radius: 1em;
+    background-color: var(--main-color);
     cursor: pointer;
+    user-select: none;
+}
+
+.clicker-button:hover {
+    background-color: var(--lighter-color);
 }
 
 .clicker-arrow {
@@ -44,24 +67,108 @@ html, body {
 }
 
 .keynote-page {
-    padding: 5px;
+    font-family: sans-serif;
+    background-color: var(--background-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.keynote-page header {
+    background-color: var(--main-color);
+    height: 3.8em;
+    padding: 0.5em;
+    border-bottom: 1px solid black;
+}
+
+.main-logo {
+    height: 100%;
+}
+
+.keynote-page main {
+    flex: auto;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2em;
 }
 
 .upload-form {
+    align-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+#upload-file-input {
+    display: none;
+}
+
+.chosen-file-name {
+    font-weight: bold;
+    font-size: 1.4em;
     text-align: center;
+}
+
+.upload-file-label {
+    border: 2px solid black;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--main-color);
+    font-weight: bold;
+    font-size: 1.4em;
+    border-radius: 1em;
+}
+
+.upload-file-label:hover {
+    background-color: var(--lighter-color);
 }
 
 .keynote-settings {
     display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2em;
+}
+
+@media (min-width: 700px) {
+    .keynote-settings {
+        flex-direction: row;
+    }
 }
 
 .keynote-settings > * {
     flex: auto;
+    background-color: var(--lighter-color);
+    max-width: 650px;
+    padding: 1em;
+    border: 1px solid black;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2em;
+    border-radius: 1em;
+}
+
+.display-link, .clicker-link {
+    color: black;
+    background-color: white;
+    box-shadow: inset 0 0 1em var(--lightest-color);
+    border-radius: 1em;
+    padding: 0.8em;
+}
+
+.display-link:hover, .clicker-link:hover {
+    color: var(--link-color);
+}
+
+.display-qr, .clicker-qr {
+    border-radius: 1em;
 }
 
 .hidden {
