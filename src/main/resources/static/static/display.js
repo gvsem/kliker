@@ -17,13 +17,36 @@ document.querySelector("body").addEventListener("keydown", keydown);
 let pdf = null;
 let futurePageNum = null;
 let pageNum = null;
+
 let renderedSlidesCache = {};
 let renderedSlidesCacheWidth = slidesContainer.clientWidth;
 let renderedSlidesCacheHeight = slidesContainer.clientHeight;
+let renderingTasksStack = [];
 
 loadMeta();
 loadFile();
 subscribe();
+renderer();
+
+function renderer() {
+    if (!renderingTasksStack.length) {
+        setTimeout(renderer, 200);
+        return;
+    }
+
+    const task = renderingTasksStack.pop();
+    if (
+        task.width !== slidesContainer.clientWidth
+        || task.height !== slidesContainer.clientHeight
+    ) {
+        setTimeout(renderer, 0);
+        return;
+    }
+
+    renderPage(task.page, task.canvas, function() {
+        setTimeout(renderer, 0);
+    });
+}
 
 function loadMeta() {
     const xhr = new XMLHttpRequest();
@@ -92,16 +115,21 @@ function getRenderedPage(num) {
     pdf
         .getPage(num)
         .then(function(page) {
-            renderPage(page, canvas, slidesContainer);
+            renderingTasksStack.push({
+                page: page,
+                canvas: canvas,
+                width: slidesContainer.clientWidth,
+                height: slidesContainer.clientHeight,
+            });
         });
 
     return canvas;
 }
 
-function renderPage(page, canvas, container) {
+function renderPage(page, canvas, renderedCallback) {
     const initialViewport = page.getViewport({ scale: 1, });
-    const widthRatio = container.clientWidth / initialViewport.width;
-    const heightRatio = container.clientHeight / initialViewport.height;
+    const widthRatio = slidesContainer.clientWidth / initialViewport.width;
+    const heightRatio = slidesContainer.clientHeight / initialViewport.height;
     const scale = Math.min(widthRatio, heightRatio);
     const scaledViewport = page.getViewport({ scale: scale });
 
@@ -117,7 +145,7 @@ function renderPage(page, canvas, container) {
         canvasContext: canvas.getContext("2d"),
         viewport: scaledViewport,
     };
-    page.render(renderContext);
+    page.render(renderContext).promise.then(renderedCallback);
 }
 
 function ensureRenderedSlidesCacheValid() {
