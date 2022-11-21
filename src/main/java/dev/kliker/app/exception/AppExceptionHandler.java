@@ -28,7 +28,7 @@ public class AppExceptionHandler // extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFound(final Exception ex, final WebRequest request) {
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(null);
+        return ResponseEntity.status(NOT_FOUND).body(null);
     }
 
 
