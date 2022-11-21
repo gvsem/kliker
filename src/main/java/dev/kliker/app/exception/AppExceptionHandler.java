@@ -22,11 +22,13 @@ public class AppExceptionHandler // extends ResponseEntityExceptionHandler
 
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
+        System.out.println("shit1");
         return new ResponseEntity<Object>(html404, new HttpHeaders(), NOT_FOUND);
     }
 
     @ExceptionHandler(SizeLimitExceededException.class)
     public ResponseEntity<Object> handlePayloadLarge(final Exception ex, final WebRequest request) {
+        System.out.println("shit2");
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(null);
     }
 

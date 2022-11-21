@@ -37,13 +37,11 @@ public class KeynoteController {
     }
 
     @ExceptionHandler(SizeLimitExceededException.class)
-    @ResponseStatus(PAYLOAD_TOO_LARGE)
     public ResponseEntity<String> handleSizeLimit(
-            Exception exception
+            SizeLimitExceededException exception
     ) {
-        return ResponseEntity
-                .status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .body(null);
+        System.out.println(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(null);
     }
 
     @JsonView(View.OnCreate.class)
