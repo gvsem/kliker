@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.webjars.NotFoundException;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -20,16 +21,16 @@ public class AppExceptionHandler // extends ResponseEntityExceptionHandler
     @Value("classpath:static/404.html")
     Resource html404;
 
-    @ExceptionHandler({ Exception.class })
-    public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
-        System.out.println("shit1");
-        return new ResponseEntity<Object>(html404, new HttpHeaders(), NOT_FOUND);
-    }
-
     @ExceptionHandler(SizeLimitExceededException.class)
     public ResponseEntity<Object> handlePayloadLarge(final Exception ex, final WebRequest request) {
-        System.out.println("shit2");
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(null);
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFound(final Exception ex, final WebRequest request) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(null);
+    }
+
+
 
 }

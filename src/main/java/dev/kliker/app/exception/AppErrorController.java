@@ -10,8 +10,6 @@ public class AppErrorController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError() {
-
-        System.out.println("error-handle");
         throw new NotFoundException("");
     }
 

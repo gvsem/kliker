@@ -36,14 +36,6 @@ public class KeynoteController {
         this.keynoteService = keynoteService;
     }
 
-    @ExceptionHandler(SizeLimitExceededException.class)
-    public ResponseEntity<String> handleSizeLimit(
-            SizeLimitExceededException exception
-    ) {
-        System.out.println(exception.getMessage());
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(null);
-    }
-
     @JsonView(View.OnCreate.class)
     @Operation(summary = "Upload keynote")
     @ApiResponses(value = {
