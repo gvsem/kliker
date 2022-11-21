@@ -11,8 +11,8 @@ const error_messages = {
 };
 const unknown_error = "Unknown error occurred. Please try again or contact the developers";
 
-window.addEventListener("resize", updateDisplay);
-document.querySelector("body").addEventListener("keydown", keydown);
+window.addEventListener("resize", handleResize);
+document.querySelector("body").addEventListener("keydown", handleKeydown);
 
 let pdf = null;
 let futurePageNum = null;
@@ -43,9 +43,18 @@ function renderer() {
         return;
     }
 
-    renderPage(task.page, task.canvas, function() {
+    renderPageNum(task.num, task.canvas, function() {
         setTimeout(renderer, 0);
     });
+}
+
+function makeRenderingTask(num) {
+    return {
+        num: num,
+        canvas: document.createElement("canvas"),
+        width: slidesContainer.clientWidth,
+        height: slidesContainer.clientHeight,
+    };
 }
 
 function loadMeta() {
@@ -73,6 +82,7 @@ function loadMeta() {
 function loadFile() {
     pdfjsLib.getDocument(fileUrl).promise.then(function(loadedPdf) {
         pdf = loadedPdf;
+        preRenderAllPages();
         trySetPage(futurePageNum !== null ? futurePageNum : 1);
     });
 }
@@ -97,33 +107,40 @@ function updateDisplay() {
     if (pdf === null) {
         return;
     }
-    const slide = getRenderedPage(pageNum);
+    const slide = getPageCanvas(pageNum);
     slidesContainer.removeChild(slidesContainer.lastChild);
     slidesContainer.appendChild(slide);
 }
 
-function getRenderedPage(num) {
+function preRenderAllPages() {
+    if (pdf === null) {
+        return;
+    }
+    for (let i = pdf.numPages; i > 0; i--) {
+        getPageCanvas(i);
+    }
+}
+
+function getPageCanvas(num) {
     ensureRenderedSlidesCacheValid();
     const cached = renderedSlidesCache[num];
     if (cached !== undefined) {
         return cached;
     }
 
-    const canvas = document.createElement("canvas");
-    renderedSlidesCache[num] = canvas;
+    const task = makeRenderingTask(num);
+    renderingTasksStack.push(task);
+    renderedSlidesCache[num] = task.canvas;
 
+    return task.canvas;
+}
+
+function renderPageNum(num, canvas, renderedCallback) {
     pdf
         .getPage(num)
         .then(function(page) {
-            renderingTasksStack.push({
-                page: page,
-                canvas: canvas,
-                width: slidesContainer.clientWidth,
-                height: slidesContainer.clientHeight,
-            });
+            renderPage(page, canvas, renderedCallback);
         });
-
-    return canvas;
 }
 
 function renderPage(page, canvas, renderedCallback) {
@@ -170,10 +187,15 @@ function handleMessage(e) {
     }
 }
 
-function keydown(e) {
+function handleKeydown(e) {
     if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
         trySetPage(pageNum + 1);
     } else if (e.key === "ArrowLeft") {
         trySetPage(pageNum - 1);
     }
+}
+
+function handleResize() {
+    preRenderAllPages();
+    updateDisplay();
 }
