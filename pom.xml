@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.kliker</groupId>
-    <artifactId>app</artifactId>
+    <artifactId>kliker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kliker</name>
     <description>kliker</description>

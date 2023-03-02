@@ -25,8 +25,14 @@ mvn spring-boot:run
 Вы можете вручную собрать образ и запустить development-версию сервиса без постоянного хранения данных:
 
 ```shell
-docker build -t kliker .
-docker run -p 7890:7890 kliker
+docker build --ulimit nofile=122880:122880 -t kliker .
+docker run -p 80:7890 kliker
+```
+
+Также приложение можно запустить через `docker-compose`:
+
+```shell
+docker-compose up
 ```
 
 ## Описание системы
