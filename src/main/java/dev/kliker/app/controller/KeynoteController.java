@@ -63,8 +63,8 @@ public class KeynoteController {
         }
 
         Keynote k = null;
-        try {
-            int count = PDDocument.load(file.getBytes()).getNumberOfPages();
+        try (PDDocument document = PDDocument.load(file.getBytes())) {
+            int count = document.getNumberOfPages();
             k = keynoteService.addKeynote(file.getBytes(), count);
         } catch (Exception e) {
             return ResponseEntity.status(UNSUPPORTED_MEDIA_TYPE).body(null);
